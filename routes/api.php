@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\InstanceController;
+use App\Http\Controllers\SchedulingController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 
@@ -49,5 +51,19 @@ Route::middleware('jwt')->group(function(){
         Route::post('create', [ClientController::class, 'create']);
         Route::patch('{id}', [ClientController::class, 'update']);
         Route::delete('{id}', [ClientController::class, 'delete']);
+    });
+
+    Route::prefix('schedule')->group(function(){
+        Route::get('search', [SchedulingController::class, 'search']);
+        Route::post('create', [SchedulingController::class, 'create']);
+        Route::patch('{id}', [SchedulingController::class, 'update']);
+        Route::delete('{id}', [SchedulingController::class, 'delete']);
+    });
+
+    Route::prefix('instance')->group(function(){
+        Route::get('search', [InstanceController::class, 'search']);        
+        Route::get('groups/{instanceName}', [InstanceController::class, 'groups']);
+        Route::get('connect/{instanceName}', [InstanceController::class, 'connect']);
+        Route::post('create', [InstanceController::class, 'create']);        
     });
 });

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRoleEnum;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -25,7 +26,7 @@ class UserSeed extends Seeder
             'cpf_cnpj' => '13754674412',
             'birth_date' => '2001-12-18',
             'is_active' => true,
-            'is_admin' => true,
+            'role' => UserRoleEnum::Admin->value,
         ]);
     }
 }

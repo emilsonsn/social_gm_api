@@ -153,7 +153,7 @@ class UserService
 
             $validator = Validator::make($request->all(), $rules);
 
-            if ($validator->fails()) throw new Exception($validator->errors());
+            if ($validator->fails()) throw new Exception($validator->errors(), 400);
 
             $userToUpdate = User::find($user_id);
 
