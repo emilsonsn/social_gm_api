@@ -2,10 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InstanceController;
+use App\Http\Controllers\LinkController;
 use App\Http\Controllers\SchedulingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\AdminMiddleware;
 
 /*
@@ -27,6 +30,11 @@ Route::post('updatePassword', [UserController::class, 'updatePassword']);
 
 
 Route::get('validateToken', [AuthController::class, 'validateToken']);
+
+Route::prefix('webhook')->group(function(){    
+    Route::post('handle', [WebhookController::class, 'handle']);        
+    Route::post('handle', [WebhookController::class, 'handle']);        
+});
 
 Route::middleware('jwt')->group(function(){
 
@@ -53,11 +61,25 @@ Route::middleware('jwt')->group(function(){
         Route::delete('{id}', [ClientController::class, 'delete']);
     });
 
+    Route::prefix('link')->group(function(){
+        Route::get('search', [LinkController::class, 'search']);
+        Route::post('create', [LinkController::class, 'create']);
+        Route::patch('{id}', [LinkController::class, 'update']);
+        Route::delete('{id}', [LinkController::class, 'delete']);
+    });
+
     Route::prefix('schedule')->group(function(){
         Route::get('search', [SchedulingController::class, 'search']);
         Route::post('create', [SchedulingController::class, 'create']);
         Route::patch('{id}', [SchedulingController::class, 'update']);
         Route::delete('{id}', [SchedulingController::class, 'delete']);
+    });
+
+    Route::prefix('automation')->group(function(){
+        Route::get('search', [AutomationController::class, 'search']);
+        Route::post('create', [AutomationController::class, 'create']);
+        Route::patch('{id}', [AutomationController::class, 'update']);
+        Route::delete('{id}', [AutomationController::class, 'delete']);
     });
 
     Route::prefix('instance')->group(function(){

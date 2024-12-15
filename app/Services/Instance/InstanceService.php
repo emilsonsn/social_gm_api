@@ -4,6 +4,7 @@ namespace App\Services\Instance;
 
 use App\Enums\UserRoleEnum;
 use App\Models\Instance;
+use App\Models\User;
 use App\Trait\EvolutionTrait;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,8 @@ class InstanceService
             $auth = Auth::user();
             $this->prepareEvoCredentials();
             $instances = $this->fetchInstances();
+
+            $this->importInstances($instances);
 
             if(!isset($instances) || !count($instances)){
                 throw new Exception('Nenhuma instancia encontrada');
@@ -138,10 +141,10 @@ class InstanceService
         }
     }
 
-    public function groups($instanceName){
+    public function groups($id){
         try{
 
-            $instance = Instance::where('name', $instanceName)
+            $instance = Instance::where('external_id', $id)
                 ->first();
 
             if(!isset($instance)){
@@ -149,7 +152,7 @@ class InstanceService
             }        
 
             $this->prepareEvoCredentials();
-            $groups = $this->fetchAllGroups($instanceName);
+            $groups = $this->fetchAllGroups($instance->name);
 
             if(!isset($groups) || !count($groups)){
                 throw new Exception('Erro ao gerar qrcode da instância');
@@ -169,5 +172,21 @@ class InstanceService
         }
     }
 
-    
+    private function importInstances($instances){
+        $user = User::where('role', 'Admin')->first();
+        foreach($instances as $instance){
+            $instance_id = $instance['id'];
+
+            if(Instance::where('external_id', $instance_id)->count()) continue;
+
+            Instance::create(
+                [
+                    'external_id' => $instance_id,
+                    'api_key' => $instance['token'],
+                    'name' => $instance['name'],
+                    'user_id' => $user->id,
+                ]
+            );
+        }
+    }
 }

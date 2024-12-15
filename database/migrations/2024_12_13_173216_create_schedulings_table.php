@@ -14,8 +14,11 @@ return new class extends Migration
         Schema::create('schedulings', function (Blueprint $table) {
             $table->id();
             $table->string('description');
+            $table->string('midia')->nullable();
+            $table->boolean('mention')->default(false);
             $table->unsignedBigInteger('instance_id');
             $table->string('group_id');
+            $table->string('group_name');
             $table->longText('text')->nullable();
             $table->string('video_path')->nullable();
             $table->string('image_path')->nullable();

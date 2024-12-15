@@ -18,8 +18,12 @@ class Scheduling extends Model
 
     public $fillable = [
         'description',
+        'midia',
+        'mention',
         'instance_id',
         'group_id',
+        'link_id',
+        'group_name',
         'text',
         'video_path',
         'image_path',
@@ -33,7 +37,23 @@ class Scheduling extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function link(){
+        return $this->belongsTo(Link::class);
+    }
+
     public function instance(){
         return $this->belongsTo(Instance::class);
+    }
+
+    public function getVideoPathAttribute($value){
+        return $value ? asset('storage/' . $value) : null;
+    }
+    
+    public function getAudioPathAttribute($value){
+        return $value ? asset('storage/' . $value) : null;
+    }
+
+    public function getImagePathAttribute($value){
+        return $value ? asset('storage/' . $value) : null;
     }
 }
