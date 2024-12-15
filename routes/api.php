@@ -87,5 +87,6 @@ Route::middleware('jwt')->group(function(){
         Route::get('groups/{instanceName}', [InstanceController::class, 'groups']);
         Route::get('connect/{instanceName}', [InstanceController::class, 'connect']);
         Route::post('create', [InstanceController::class, 'create']);        
+        Route::delete('{id}', [InstanceController::class, 'delete']);
     });
 });

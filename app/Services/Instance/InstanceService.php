@@ -189,4 +189,36 @@ class InstanceService
             );
         }
     }
+
+    public function delete($id){
+        try{
+
+            $instance = Instance::where('id', $id)
+                ->orWhere('external_id', $id)
+                ->first();
+
+            if(!isset($instance)){
+                throw new Exception('Instância não encontrada', 400);
+            }        
+
+            $this->prepareEvoCredentials();
+            $this->logoutInstance($instance->name);
+            $this->deleteInstance($instance->name);
+
+            $instanceName = $instance->name;
+            $instance->delete();
+                
+            return [
+                'status' => true,
+                'data' => $instanceName
+            ];
+
+        } catch(Exception $error){
+            return [
+                'status' => false,
+                'message' => $error->getMessage(),
+                'statusCode' => $error->getCode() ?? 400
+            ];  
+        }
+    }
 }

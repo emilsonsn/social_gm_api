@@ -45,6 +45,26 @@ Trait EvolutionTrait
         return $response;
     }
 
+    public function logoutInstance($instance){
+        $getInstances = Http::withHeaders([
+            'apiKey' => $this->apiKey,
+        ])->delete($this->baseUrl . "/instance/logout/$instance");
+
+        $response = $getInstances->json();
+
+        return $response;
+    }
+
+    public function deleteInstance($instance){
+        $getInstances = Http::withHeaders([
+            'apiKey' => $this->apiKey,
+        ])->delete($this->baseUrl . "/instance/delete/$instance");
+
+        $response = $getInstances->json();
+
+        return $response;
+    }
+    
     public function fetchAllGroups($instance){
         $getInstances = Http::withHeaders([
             'apiKey' => $this->apiKey,

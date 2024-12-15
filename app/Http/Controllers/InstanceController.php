@@ -39,6 +39,14 @@ class InstanceController extends Controller
         return $this->response($result);
     }
 
+    public function delete($id){
+        $result = $this->instanceService->delete($id);
+
+        if($result['status']) $result['message'] = "Instância deletada com sucesso";
+
+        return $this->response($result);
+    }
+
     private function response($result){
         return response()->json([
             'status' => $result['status'],
