@@ -22,7 +22,7 @@ class SchedulingService
                 ->orWhere('external_id', $instance_id);             
             })->first();
 
-            $schedulings = Scheduling::orderBy('datetime', 'asc');
+            $schedulings = Scheduling::orderBy('datetime', 'desc');
 
             $schedulings->where(function($query) use($instance){
                 $query->where('instance_id', $instance->id)
