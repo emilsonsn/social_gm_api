@@ -20,13 +20,25 @@ class UserSeed extends Seeder
         ],
         [
             'name' => 'Admin',
-            'email' => 'admin@admin',
             'password' => Hash::make('admin'),
             'phone' => '83991236636',
             'cpf_cnpj' => '13754674412',
             'birth_date' => '2001-12-18',
             'is_active' => true,
             'role' => UserRoleEnum::Admin->value,
+        ]);
+
+        User::firstOrCreate([
+            'email' => 'user@user',
+        ],
+        [
+            'name' => 'User',
+            'password' => Hash::make('user'),
+            'phone' => '83991236636',
+            'cpf_cnpj' => '13754674412',
+            'birth_date' => '2001-12-18',
+            'is_active' => true,
+            'role' => UserRoleEnum::User->value,
         ]);
     }
 }
