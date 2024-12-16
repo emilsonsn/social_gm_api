@@ -10,10 +10,12 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule): void
+    protected function schedule(Schedule $schedule)
     {
-        $schedule->call('app:send-message')->everyMinute();
+        $schedule->command('app:send-message')->everyMinute()
+            ->appendOutputTo(storage_path('logs/schedule.log'));
     }
+    
 
     /**
      * Register the commands for the application.
