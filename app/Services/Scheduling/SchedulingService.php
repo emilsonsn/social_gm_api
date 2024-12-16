@@ -164,6 +164,8 @@ class SchedulingService
                 $videoPath = $request->file('video_path')->store('public/video');
                 $requestData['video_path'] = str_replace('public/', '', $videoPath);
             }
+
+            $requestData['status'] = 'Waiting';
             
             $schedulingToUpdate->update($requestData);
                 
