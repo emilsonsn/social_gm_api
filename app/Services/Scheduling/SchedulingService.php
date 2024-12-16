@@ -22,12 +22,13 @@ class SchedulingService
                 ->orWhere('external_id', $instance_id);             
             })->first();
 
-            $schedulings = Scheduling::where(function($query) use($instance){
+            $schedulings = Scheduling::orderBy('datetime', 'asc');
+
+            $schedulings->where(function($query) use($instance){
                 $query->where('instance_id', $instance->id)
                     ->orWhere('instance_id', $instance->external_id);
             });
               
-
             if($request->filled('description')){
                 $schedulings->where('description', 'LIKE', "%$request->description%");
             }
@@ -102,8 +103,8 @@ class SchedulingService
 
             if(!isset($requestData['user_id'])) $requestData['user_id'] = Auth::user()->id;
 
-            $instance = Instance::where('external_id', $requestData['instance_id'])
-                ->orWhere('id', $requestData['instance_id'])
+            $instance = Instance::where('id', $requestData['instance_id'])
+                ->orWhere('external_id', $requestData['instance_id'])
                 ->first();
             
             if(!isset($instance)) throw new Exception('Agendamento não encontrada');
