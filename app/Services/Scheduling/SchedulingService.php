@@ -20,7 +20,8 @@ class SchedulingService
                 ->orWhere('id', $instance_id)
                 ->first();
 
-            $schedulings = Scheduling::where('instance_id', $instance->id);
+            $schedulings = Scheduling::where('instance_id', $instance->id)
+                ->orWhere('instance_id', $instance->external_id);
 
             if($request->filled('description')){
                 $schedulings->where('description', 'LIKE', "%$request->description%");
