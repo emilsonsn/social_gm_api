@@ -52,6 +52,7 @@ Route::middleware('jwt')->group(function(){
         Route::post('create', [UserController::class, 'create']);
         Route::patch('{id}', [UserController::class, 'update']);
         Route::post('block/{id}', [UserController::class, 'userBlock']);
+        Route::delete('{id}', [UserController::class, 'delete']);
     });
 
     Route::prefix('client')->group(function(){
@@ -71,6 +72,7 @@ Route::middleware('jwt')->group(function(){
     Route::prefix('schedule')->group(function(){
         Route::get('search', [SchedulingController::class, 'search']);
         Route::post('create', [SchedulingController::class, 'create']);
+        Route::post('copy/{id}', [SchedulingController::class, 'copy']);
         Route::patch('{id}', [SchedulingController::class, 'update']);
         Route::delete('{id}', [SchedulingController::class, 'delete']);
     });

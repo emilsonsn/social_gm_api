@@ -19,7 +19,12 @@ class LinkService
 
             $auth = Auth::user();
 
-            if($auth->role !== UserRoleEnum::Admin->value){
+            if($request->filled('instance_id')){
+                $instance = Instance::where('id', $request->instance_id)
+                    ->where('external_id', $request->external_id);
+                
+                $links->where('user_id', $instance->user_id);
+            } else if($auth->role !== UserRoleEnum::Admin->value){
                 $links->where('user_id', $auth->id);
             }
 

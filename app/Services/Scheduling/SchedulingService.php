@@ -103,9 +103,13 @@ class SchedulingService
 
             if(!isset($requestData['user_id'])) $requestData['user_id'] = Auth::user()->id;
 
-            $instance = Instance::where('id', $requestData['instance_id'])
-                ->orWhere('external_id', $requestData['instance_id'])
-                ->first();
+            if (is_numeric($requestData['instance_id'])) {
+                $instance = Instance::where('id', $requestData['instance_id'])
+                    ->first();
+            } else {
+                $instance = Instance::where('external_id', $requestData['instance_id'])
+                    ->first();
+            }
             
             if(!isset($instance)) throw new Exception('Agendamento não encontrada');
 
@@ -125,6 +129,32 @@ class SchedulingService
                 'statusCode' => 400
             ];  
         }
+    }
+
+    public function copy($id){
+        try{
+            $scheduling = Scheduling::find($id);
+
+            if(!isset($scheduling)) {
+                throw new Exception('Agendamento não encontrado');
+            }
+
+            $duplicateScheduling = $scheduling->replicate();
+
+            $duplicateScheduling->save();
+
+            return [
+                'status' => true,
+                'data' => $duplicateScheduling
+            ];
+        }catch(Exception $error){
+            return [
+                'status' => false,
+                'message' => $error->getMessage(),
+                'statusCode' => 400
+            ];  
+        }
+
     }
 
     public function update($request, $id)

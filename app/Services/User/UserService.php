@@ -92,18 +92,14 @@ class UserService
     public function create($request)
     {
         try {
-            $request['photo'] = $request['photo'] == 'null' ? null : $request['photo'];
-            $request['is_active'] = $request['is_active'] == 'false' ? false : true;
-            
             $rules = [
                 'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
+                'email' => 'required|string|email|max:255',
                 'phone' => 'nullable|string',
                 'cpf_cnpj' => 'nullable|string',
                 'birth_date' => 'nullable|date',
-                'is_active' => 'nullable|boolean|default:true',
+                'is_active' => 'nullable|boolean',
                 'role' => 'nullable|in:Admin,Manager,User',
-                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ];
     
             $password = str_shuffle(Str::upper(Str::random(1)) . rand(0, 9) . Str::random(1, '?!@#$%^&*') . Str::random(5));
@@ -114,7 +110,7 @@ class UserService
             $validator = Validator::make($requestData, $rules);
     
             if ($validator->fails()) {
-                return ['status' => false, 'error' => $validator->errors(), 'statusCode' => 400];
+                throw new Exception($validator->errors(), 400);
             }
     
             if ($request->hasFile('photo')) {
@@ -137,23 +133,23 @@ class UserService
     public function update($request, $user_id)
     {
         try {
-            $request['photo'] = $request['photo'] == 'null' ? null : $request['photo'];
-            $request['is_active'] = $request['is_active'] == 'false' ? false : true;
-
             $rules = [
                 'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'phone' => 'nullable|string',
+                'email' => 'required|string|email|max:255',
                 'cpf_cnpj' => 'nullable|string',
                 'birth_date' => 'nullable|date',
-                'is_active' => 'nullable|boolean|default:true',
+                'is_active' => 'nullable|boolean',
                 'role' => 'nullable|in:Admin,Manager,User',
                 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ];
 
-            $validator = Validator::make($request->all(), $rules);
+            $requestData = $request->all();
 
-            if ($validator->fails()) throw new Exception($validator->errors(), 400);
+            $validator = Validator::make($requestData, $rules);
+    
+            if ($validator->fails()) {
+                throw new Exception($validator->errors(), 400);
+            }
 
             $userToUpdate = User::find($user_id);
 
@@ -191,6 +187,22 @@ class UserService
         }
     }
 
+    public function delete($user_id)
+    {
+        try {
+            $user = User::find($user_id);
+
+            if (!$user) throw new Exception('Usuário não encontrado');
+
+            $userName = $user->userName;
+            $user->delete();
+
+            return ['status' => true, 'data' => $userName];
+        } catch (Exception $error) {
+            return ['status' => false, 'error' => $error->getMessage(), 'statusCode' => 400];
+        }
+    }
+    
     public function requestRecoverPassword($request)
     {
         try {

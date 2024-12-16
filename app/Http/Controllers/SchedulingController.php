@@ -27,6 +27,14 @@ class SchedulingController extends Controller
         return $this->response($result);
     }
 
+    public function copy(int $id){
+        $result = $this->schedulingService->copy($id);
+
+        if($result['status']) $result['message'] = "Agendamento copiado com sucesso";
+
+        return $this->response($result);
+    }
+
     public function update(Request $request, int $id){
         $result = $this->schedulingService->update($request, $id);
 
