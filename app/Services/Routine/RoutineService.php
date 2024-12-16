@@ -16,7 +16,7 @@ class RoutineService
     public function handleMessage(){
 
         $schedules = Scheduling::where('status', 'Waiting')
-            ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') = ?", [Carbon::now()->format('Y-m-d H:i')])
+            // ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') = ?", [Carbon::now()->format('Y-m-d H:i')])
             ->get();
 
         foreach($schedules as $schedule){
@@ -51,14 +51,14 @@ class RoutineService
         $number = $schedule->group_id;
         $mediaType = $type;
         $media = $type === 'video' ? $schedule->video_path : $schedule->image_path;
-        $mimeType = mime_content_type($media);
-        $fileExtension = pathinfo($media, PATHINFO_EXTENSION);
+        $media_dir = storage_path('app/public' . explode('/storage',$media)[1]);
+        $mimeType = mime_content_type($media_dir);
+        $fileExtension = pathinfo($media_dir, PATHINFO_EXTENSION);
         $fileName = "midea_automation.{$fileExtension}";
         $caption = str_replace('{{link}}', $schedule->link->url, $schedule->text);
         $mention = $schedule->mention ?? false;
         $this->sendMedia($instance, $number, $mediaType, $media, $caption, $mimeType, $fileName, mention: $mention);
     }
-    
 
     public function sendAudioWithEvolution($schedule){
         $instance = $schedule->instance->name;

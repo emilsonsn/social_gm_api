@@ -33,6 +33,6 @@ class SendMessage extends Command
      */
     public function handle()
     {
-        $this->routineService->sendMessage();
+        $this->routineService->handleMessage();
     }
 }
