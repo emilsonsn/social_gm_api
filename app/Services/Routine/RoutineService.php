@@ -16,7 +16,7 @@ class RoutineService
     public function handleMessage(){
 
         $schedules = Scheduling::where('status', 'Waiting')
-            // ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') = ?", [Carbon::now()->format('Y-m-d H:i')])
+            ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') = ?", [Carbon::now()->format('Y-m-d H:i')])
             ->get();
 
         foreach($schedules as $schedule){
