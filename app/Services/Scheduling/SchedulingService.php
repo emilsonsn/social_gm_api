@@ -121,7 +121,7 @@ class SchedulingService
     public function update($request, $id)
     {
         try{
-            $request['mention'] = $request['mention'] === 'true'? true : false;
+            $request['mention'] = !!(int)$request['mention'];
 
             $rules = [
                 'description' => ['required', 'string', 'max:255'],
