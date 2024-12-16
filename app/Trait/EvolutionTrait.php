@@ -96,7 +96,7 @@ Trait EvolutionTrait
         return $response->json();
     }
 
-    public function sendAudio($instance, $number, $audio, $delay = null, $encoding = null, $quoted = null, $mention)
+    public function sendAudio($instance, $number, $audio, $mention)
     {
         $response = Http::withHeaders([
             'apiKey' => $this->apiKey,
@@ -104,9 +104,6 @@ Trait EvolutionTrait
         ])->post($this->baseUrl . "/message/sendWhatsAppAudio/{$instance}", [
             'number' => $number,
             'audio' => $audio,
-            'delay' => $delay,
-            'encoding' => $encoding,
-            'quoted' => $quoted,
             'mentionsEveryOne' => $mention,
         ]);
 

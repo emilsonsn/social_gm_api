@@ -56,7 +56,8 @@ class RoutineService
         $fileExtension = pathinfo($media_dir, PATHINFO_EXTENSION);
         $fileName = "midea_automation.{$fileExtension}";
         $caption = str_replace('{{link}}', $schedule->link->url, $schedule->text);
-        $mention = $schedule->mention ?? false;
+        $mention = !!$schedule->mention;
+        // $media = "https://social.guimadureira.com:3001/storage/image/D37XYNlrYXLSZXdZxPbCSGWXNkcA7IdeiI4P0Kha.jpg";
         $this->sendMedia($instance, $number, $mediaType, $media, $caption, $mimeType, $fileName, mention: $mention);
     }
 
@@ -64,7 +65,8 @@ class RoutineService
         $instance = $schedule->instance->name;
         $number = $schedule->group_id;
         $audio = $schedule->audio_path;
-        $mention = $schedule->mention ?? false;
+        // $audio = "https://social.guimadureira.com:3001/storage/audio/S1mm23Bl0mDLr52rLNdEGbuoir7NcE4tPleRipS1.mp3";
+        $mention = !!$schedule->mention;
         $this->sendAudio($instance, $number, $audio, mention:$mention);
         $this->sendMessageWithEvolution($schedule);
     }
@@ -72,8 +74,8 @@ class RoutineService
     public function sendMessageWithEvolution($schedule){
         $instance = $schedule->instance->name;
         $number = $schedule->group_id;
-        $message = $schedule->text;
-        $mention = $schedule->mention ?? false;     
+        $mention = !!$schedule->mention;
+        $message = str_replace('{{link}}', $schedule->link->url, $schedule->text);
         $this->sendMessage($instance, $number, $message, mention:$mention);
     }
 }

@@ -183,7 +183,11 @@ class InstanceService
         foreach($instances as $instance){
             $instance_id = $instance['id'];
 
-            if(Instance::where('external_id', $instance_id)->count()) continue;
+            if(
+                Instance::where('external_id', $instance_id)
+                ->orWhere('id', $instance_id)
+                ->count()
+            ) continue;
 
             Instance::create(
                 [
