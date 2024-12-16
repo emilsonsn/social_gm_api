@@ -13,7 +13,8 @@ class LinkService
 {
     public function search($request)
     {
-        try{            
+        try{
+            $take = $request->take ?? 10;
             $links = Link::orderBy('id', 'desc');
 
             $auth = Auth::user();
@@ -22,7 +23,7 @@ class LinkService
                 $links->where('user_id', $auth->id);
             }
 
-            $links = $links->paginate(10);
+            $links = $links->paginate($take);
 
             return $links;
 

@@ -14,14 +14,19 @@ class SchedulingService
     public function search($request)
     {
         try{
+            $take = $request->take ?? 10;
             $instance_id = $request->instance_id;
 
-            $instance = Instance::where('external_id', $instance_id)
-                ->orWhere('id', $instance_id)
-                ->first();
+            $instance = Instance::where(function($query) use($instance_id){
+                $query->where('id', $instance_id)
+                ->orWhere('external_id', $instance_id);             
+            })->first();
 
-            $schedulings = Scheduling::where('instance_id', $instance->id)
-                ->orWhere('instance_id', $instance->external_id);
+            $schedulings = Scheduling::where(function($query) use($instance){
+                $query->where('instance_id', $instance->id)
+                    ->orWhere('instance_id', $instance->external_id);
+            });
+              
 
             if($request->filled('description')){
                 $schedulings->where('description', 'LIKE', "%$request->description%");
@@ -35,10 +40,12 @@ class SchedulingService
             if($request->filled('date')){
                 $schedulings->whereDate('datetime', $request->date);
             }else{
-                $schedulings->whereDate('datetime', Carbon::now());
+                if ('Model' != $request->status){
+                    $schedulings->whereDate('datetime', Carbon::now());
+                } 
             }
 
-            $schedulings = $schedulings->paginate(30);
+            $schedulings = $schedulings->paginate($take);
 
             return $schedulings;
 
