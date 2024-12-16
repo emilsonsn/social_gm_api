@@ -22,7 +22,7 @@ class SchedulingController extends Controller
     public function create(Request $request){
         $result = $this->schedulingService->create($request);
 
-        if($result['status']) $result['message'] = "Instância criada com sucesso";
+        if($result['status']) $result['message'] = "Agendamento criado com sucesso";
 
         return $this->response($result);
     }

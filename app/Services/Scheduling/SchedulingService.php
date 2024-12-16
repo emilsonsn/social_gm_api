@@ -37,7 +37,7 @@ class SchedulingService
                 $schedulings->whereDate('datetime', Carbon::now());
             }
 
-            $schedulings = $schedulings->paginate(10);
+            $schedulings = $schedulings->paginate(30);
 
             return $schedulings;
 
@@ -98,7 +98,7 @@ class SchedulingService
                 ->orWhere('id', $requestData['instance_id'])
                 ->first();
             
-            if(!isset($instance)) throw new Exception('Instância não encontrada');
+            if(!isset($instance)) throw new Exception('Agendamento não encontrada');
 
             $requestData['instance_id'] = $instance->id;
 
@@ -190,7 +190,7 @@ class SchedulingService
             $scheduling = Scheduling::find($id);
 
             if(!isset($scheduling)){
-                throw new Exception('Não foi possível encontrar agendamento');
+                throw new Exception('Agendamento não encontrado');
             }
 
             $schedulingId = $scheduling->id;

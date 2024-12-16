@@ -48,7 +48,7 @@ class RoutineService
     public function sendMideaWithEvolution($schedule, $type)
     {
         $instance = $schedule->instance->name;
-        $number = $schedule->group_id;
+        $numbers = explode(',', $schedule->group_id);
         $mediaType = $type;
         $media = $type === 'video' ? $schedule->video_path : $schedule->image_path;
         $media_dir = storage_path('app/public' . explode('/storage',$media)[1]);
@@ -57,25 +57,35 @@ class RoutineService
         $fileName = "midea_automation.{$fileExtension}";
         $caption = str_replace('{{link}}', $schedule->link->url, $schedule->text);
         $mention = !!$schedule->mention;
-        // $media = "https://social.guimadureira.com:3001/storage/image/D37XYNlrYXLSZXdZxPbCSGWXNkcA7IdeiI4P0Kha.jpg";
-        $this->sendMedia($instance, $number, $mediaType, $media, $caption, $mimeType, $fileName, mention: $mention);
+        foreach($numbers as $number){
+            $number = trim($number);
+            $this->sendMedia($instance, $number, $mediaType, $media, $caption, $mimeType, $fileName, mention: $mention);
+            sleep(1);
+        }
     }
 
     public function sendAudioWithEvolution($schedule){
         $instance = $schedule->instance->name;
-        $number = $schedule->group_id;
+        $numbers = explode(',', $schedule->group_id);
         $audio = $schedule->audio_path;
-        // $audio = "https://social.guimadureira.com:3001/storage/audio/S1mm23Bl0mDLr52rLNdEGbuoir7NcE4tPleRipS1.mp3";
         $mention = !!$schedule->mention;
-        $this->sendAudio($instance, $number, $audio, mention:$mention);
+        foreach($numbers as $number){
+            $number = trim($number);
+            $this->sendAudio($instance, $number, $audio, mention:$mention);
+            sleep(1);
+        }
         $this->sendMessageWithEvolution($schedule);
     }
 
     public function sendMessageWithEvolution($schedule){
         $instance = $schedule->instance->name;
-        $number = $schedule->group_id;
+        $numbers = explode(',', $schedule->group_id);
         $mention = !!$schedule->mention;
         $message = str_replace('{{link}}', $schedule->link->url, $schedule->text);
-        $this->sendMessage($instance, $number, $message, mention:$mention);
+        foreach($numbers as $number){
+            $number = trim($number);
+            $this->sendMessage($instance, $number, $message, mention:$mention);
+            sleep(1);
+        }
     }
 }
