@@ -55,7 +55,11 @@ class RoutineService
         $mimeType = mime_content_type($media_dir);
         $fileExtension = pathinfo($media_dir, PATHINFO_EXTENSION);
         $fileName = "midea_automation.{$fileExtension}";
-        $caption = str_replace('{{link}}', $schedule->link->url, $schedule->text);
+        if(isset($schedule->link)){
+            $caption = str_replace('{{link}}', $schedule->link->url, $schedule->text);
+        }else{
+            $caption = $schedule->text;
+        }
         $mention = !!$schedule->mention;
         foreach($numbers as $number){
             $number = trim($number);
@@ -81,7 +85,11 @@ class RoutineService
         $instance = $schedule->instance->name;
         $numbers = explode(',', $schedule->group_id);
         $mention = !!$schedule->mention;
-        $message = str_replace('{{link}}', $schedule->link->url, $schedule->text);
+        if(isset($schedule->link)){
+            $message = str_replace('{{link}}', $schedule->link->url, $schedule->text);
+        }else{
+            $message = $schedule->text;
+        }
         foreach($numbers as $number){
             $number = trim($number);
             $this->sendMessage($instance, $number, $message, mention:$mention);
