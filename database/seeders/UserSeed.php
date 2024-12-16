@@ -35,7 +35,7 @@ class UserSeed extends Seeder
             'name' => 'User',
             'password' => Hash::make('user'),
             'phone' => '83991236636',
-            'cpf_cnpj' => '13754674412',
+            'cpf_cnpj' => '13754674413',
             'birth_date' => '2001-12-18',
             'is_active' => true,
             'role' => UserRoleEnum::User->value,
