@@ -45,7 +45,7 @@ class SchedulingService
             return [
                 'status' => false,
                 'message' => $error->getMessage(),
-                'statusCode' => $error->getCode() ?? 400
+                'statusCode' => 400
             ];  
         }
     }
@@ -113,7 +113,7 @@ class SchedulingService
             return [
                 'status' => false,
                 'message' => $error->getMessage(),
-                'statusCode' => $error->getCode() ?? 400
+                'statusCode' => 400
             ];  
         }
     }
@@ -176,7 +176,7 @@ class SchedulingService
             return [
                 'status' => false,
                 'message' => $error->getMessage(),
-                'statusCode' => $error->getCode() ?? 400
+                'statusCode' => 400
             ];  
         }
     }
@@ -204,7 +204,7 @@ class SchedulingService
             return [
                 'status' => false,
                 'message' => $error->getMessage(),
-                'statusCode' => $error->getCode() ?? 400
+                'statusCode' => 400
             ];  
         }
     }
