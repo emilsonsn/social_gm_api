@@ -57,9 +57,9 @@ class SchedulingService
 
             $rules = [
                 'description' => ['required', 'string', 'max:255'],
-                'midia' => ['nullable', 'string', 'in:audio,video,imagem'],
+                'midia' => ['nullable', 'string', 'in:audio,video,imagem,text'],
                 'mention' => ['nullable', 'boolean'],
-                'instance_id' => ['required', 'integer'],
+                'instance_id' => ['required'],
                 'group_id' => ['required', 'string'],
                 'link_id' => ['nullable', 'integer'],
                 'group_name' => ['required', 'string'],
@@ -125,9 +125,9 @@ class SchedulingService
 
             $rules = [
                 'description' => ['required', 'string', 'max:255'],
-                'midia' => ['nullable', 'string', 'in:audio,video,imagem'],
+                'midia' => ['nullable', 'string', 'in:audio,video,imagem,text'],
                 'mention' => ['nullable', 'boolean'],
-                'instance_id' => ['required', 'integer'],
+                'instance_id' => ['required'],
                 'group_id' => ['required', 'string'],
                 'link_id' => ['nullable', 'integer'],
                 'group_name' => ['required', 'string'],

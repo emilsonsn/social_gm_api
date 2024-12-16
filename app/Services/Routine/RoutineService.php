@@ -13,10 +13,10 @@ class RoutineService
 
     use EvolutionTrait; 
 
-    public function sendMessage(){
+    public function handleMessage(){
 
         $schedules = Scheduling::where('status', 'Waiting')
-            // ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') = ?", [Carbon::now()->format('Y-m-d H:i')])
+            ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') = ?", [Carbon::now()->format('Y-m-d H:i')])
             ->get();
 
         foreach($schedules as $schedule){
@@ -36,8 +36,8 @@ class RoutineService
                         $this->sendMessageWithEvolution($schedule);                        
                 }
                 
-                // $schedule->status = 'Sent';
-                // $schedule->save();
+                $schedule->status = 'Sent';
+                $schedule->save();
             }
             catch(Exception $error){
                 Log::error($error->getMessage());
@@ -45,26 +45,27 @@ class RoutineService
         }            
     }
 
-    public function sendMideaWithEvolution($schedule, $type){
+    public function sendMideaWithEvolution($schedule, $type)
+    {
         $instance = $schedule->instance->name;
         $number = $schedule->group_id;
         $mediaType = $type;
-        $mimeType = 'image/jpg';
-        $fileName = 'midea_automation.jpg';
-        // $media = $type === 'video' ? $schedule->video_path : $schedule->image_path;
-        $media = 'https://i.ytimg.com/vi/09pSwhHK5P8/hq720.jpg';
-        $caption = str_replace('{{link}}',$schedule->link->url ,$schedule->text);
-        
-        $response = $this->sendMedia($instance,$number,$mediaType,$media,$caption,$mimeType, $fileName);
-        $response;
+        $media = $type === 'video' ? $schedule->video_path : $schedule->image_path;
+        $mimeType = mime_content_type($media);
+        $fileExtension = pathinfo($media, PATHINFO_EXTENSION);
+        $fileName = "midea_automation.{$fileExtension}";
+        $caption = str_replace('{{link}}', $schedule->link->url, $schedule->text);
+        $mention = $schedule->mention ?? false;
+        $this->sendMedia($instance, $number, $mediaType, $media, $caption, $mimeType, $fileName, mention: $mention);
     }
+    
 
     public function sendAudioWithEvolution($schedule){
         $instance = $schedule->instance->name;
         $number = $schedule->group_id;
         $audio = $schedule->audio_path;
-     
-        $this->sendAudio($instance, $number, $audio);
+        $mention = $schedule->mention ?? false;
+        $this->sendAudio($instance, $number, $audio, mention:$mention);
         $this->sendMessageWithEvolution($schedule);
     }
 
@@ -72,7 +73,7 @@ class RoutineService
         $instance = $schedule->instance->name;
         $number = $schedule->group_id;
         $message = $schedule->text;
-     
-        $this->sendMessage($instance, $number, $message);
+        $mention = $schedule->mention ?? false;     
+        $this->sendMessage($instance, $number, $message, mention:$mention);
     }
 }

@@ -75,7 +75,7 @@ Trait EvolutionTrait
         return $response;
     }
 
-    public function sendMessage($instance, $number, $message)
+    public function sendMessage($instance, $number, $message, $mention)
     {
         $response = Http::withHeaders([
             'apiKey' => $this->apiKey,
@@ -83,12 +83,14 @@ Trait EvolutionTrait
         ])->post($this->baseUrl . "/message/sendText/{$instance}", [
             'number' => $number,
             'text' => $message,
+            'mentionsEveryOne' => $mention,
+            "linkPreview" => false
         ]);
 
         return $response->json();
     }
 
-    public function sendAudio($instance, $number, $audio, $delay = null, $encoding = null, $quoted = null, $mentionsEveryOne = null, $mentioned = null)
+    public function sendAudio($instance, $number, $audio, $delay = null, $encoding = null, $quoted = null, $mention)
     {
         $response = Http::withHeaders([
             'apiKey' => $this->apiKey,
@@ -99,14 +101,13 @@ Trait EvolutionTrait
             'delay' => $delay,
             'encoding' => $encoding,
             'quoted' => $quoted,
-            'mentionsEveryOne' => $mentionsEveryOne,
-            'mentioned' => $mentioned,
+            'mentionsEveryOne' => $mention,
         ]);
 
         return $response->json();
     }
 
-    public function sendMedia($instance, $number, $mediaType, $media, $caption, $mimeType = null, $fileName = null)
+    public function sendMedia($instance, $number, $mediaType, $media, $caption, $mimeType = null, $fileName = null, $mention)
     {
         $response = Http::withHeaders([
             'apiKey' => $this->apiKey,
@@ -118,6 +119,7 @@ Trait EvolutionTrait
             'caption' => $caption,
             'mimetype' => $mimeType,
             'fileName' => $fileName,
+            "mentionsEveryOne" => $mention
         ]);
 
         return $response->json();
