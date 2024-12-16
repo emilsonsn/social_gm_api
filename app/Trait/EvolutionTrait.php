@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Trait;
+use Dotenv\Dotenv;
 
 use Illuminate\Support\Facades\Http;
 
@@ -11,6 +12,11 @@ Trait EvolutionTrait
 
     public function prepareEvoCredentials()
     {
+        if (file_exists(base_path('.env'))) {
+            $dotenv = Dotenv::createImmutable(base_path());
+            $dotenv->load();
+        }
+
         $this->apiKey = env('EVO_API_KEY');
         $this->baseUrl = env('EVO_URL');
     }
