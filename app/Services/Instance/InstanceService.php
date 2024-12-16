@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Trait\EvolutionTrait;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class InstanceService
@@ -141,34 +142,39 @@ class InstanceService
         }
     }
 
-    public function groups($id){
-        try{
+    public function groups($id)
+    {
+        try {
+            $cacheKey = "instance_groups_{$id}";
 
-            $instance = Instance::where('external_id', $id)
-                ->first();
+            $groups = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id) {
+                $instance = Instance::where('external_id', $id)->first();
 
-            if(!isset($instance)){
-                throw new Exception('Instância não encontrada', 400);
-            }        
+                if (!isset($instance)) {
+                    throw new Exception('Instância não encontrada', 400);
+                }
 
-            $this->prepareEvoCredentials();
-            $groups = $this->fetchAllGroups($instance->name);
+                $this->prepareEvoCredentials();
+                $groups = $this->fetchAllGroups($instance->name);
 
-            if(!isset($groups) || !count($groups)){
-                throw new Exception('Erro ao gerar qrcode da instância');
-            }
-                
+                if (!isset($groups) || !count($groups)) {
+                    throw new Exception('Erro ao obter grupos da instância');
+                }
+
+                return $groups;
+            });
+
             return [
                 'status' => true,
                 'data' => $groups
             ];
 
-        } catch(Exception $error){
+        } catch (Exception $error) {
             return [
                 'status' => false,
                 'message' => $error->getMessage(),
                 'statusCode' => 400
-            ];  
+            ];
         }
     }
 
