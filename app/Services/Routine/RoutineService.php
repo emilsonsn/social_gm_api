@@ -43,13 +43,13 @@ class RoutineService
                             $this->sendMessageWithEvolution($schedule);
                     }
                     
-                    MessageSendingLog::create([
-                        'schedule_id' => $schedule->id,
-                        'instanceName' => $schedule->instance->name ?? 'noName',
-                        'description' => $schedule->description,
-                        'datetime' => $schedule->datetime,
-                        'group_id' => $schedule->group_id,
-                    ]);
+                    // MessageSendingLog::create([
+                    //     'schedule_id' => $schedule->id,
+                    //     'instanceName' => $schedule->instance->name ?? 'noName',
+                    //     'description' => $schedule->description,
+                    //     'datetime' => $schedule->datetime,
+                    //     'group_id' => $schedule->group_id,
+                    // ]);
 
                     $schedule->status = 'Sent';
                     $schedule->save();
