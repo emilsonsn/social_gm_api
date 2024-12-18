@@ -45,7 +45,7 @@ class RoutineService
                     
                     MessageSendingLog::create([
                         'schedule_id' => $schedule->id,
-                        'instanceName' => $schedule->instance->name,
+                        'instanceName' => $schedule->instance->name ?? 'noName',
                         'description' => $schedule->description,
                         'datetime' => $schedule->datetime,
                         'group_id' => $schedule->group_id,
