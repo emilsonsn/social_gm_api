@@ -24,7 +24,8 @@ class SchedulingService
                 ->orWhere('external_id', $instance_id);             
             })->first();
 
-            $schedulings = Scheduling::orderBy($orderField, $order);
+            $schedulings = Scheduling::orderBy($orderField, $order)
+                ->orderBy('id', 'desc');
 
             $schedulings->where(function($query) use($instance){
                 $query->where('instance_id', $instance->id)
@@ -235,6 +236,9 @@ class SchedulingService
                     ->first();
             }
 
+            if(!isset($instance)) throw new Exception('Agendamento não encontrada');
+
+            $requestData['instance_id'] = $instance->id;
             $requestData['status'] = $requestData['status'] ?? 'Waiting';
             
             $schedulingToUpdate->update($requestData);
