@@ -22,7 +22,7 @@ class RoutineService
         try {
             $schedules = Scheduling::where('status', 'Waiting')
                 ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') <= ?", [Carbon::now()->format('Y-m-d H:i')])
-                ->whereNull('deleted_at')
+                // ->whereNull('deleted_at')
                 ->doesntHave('messageSendingLog')
                 ->lockForUpdate()
                 ->get();
