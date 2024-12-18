@@ -57,7 +57,8 @@ class Scheduling extends Model
         return $value ? asset('storage/' . $value) : null;
     }
 
-    public function messageSendingLog(){
-        return $this->hasMany(MessageSendingLog::class, 'schedule_id');
+    public function messageSendingLog()
+    {
+        return $this->hasOne(MessageSendingLog::class, 'schedule_id');
     }
 }

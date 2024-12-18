@@ -7,7 +7,6 @@ use App\Models\Scheduling;
 use App\Trait\EvolutionTrait;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class RoutineService
@@ -17,14 +16,13 @@ class RoutineService
 
     public function handleMessage()
     {
-        DB::beginTransaction();
-
         try {
-            $schedules = Scheduling::where('status', 'Waiting')
-                ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') = ?", [Carbon::now()->format('Y-m-d H:i')])
-                ->whereNull('deleted_at')
-                ->doesntHave('messageSendingLog')
-                ->lockForUpdate()
+            $schedules = Scheduling::whereBetween('datetime', [
+                    Carbon::now()->subMinutes(3), 
+                    Carbon::now()
+                ])
+                ->where('status', 'Waiting')
+                ->doesntHave('messageSendingLog')                
                 ->get();
 
             foreach ($schedules as $schedule) {
@@ -60,13 +58,10 @@ class RoutineService
                 }
             }
 
-            DB::commit();
         } catch (Exception $error) {
-            DB::rollBack();
             Log::error($error->getMessage());
         }
     }
-
 
     public function sendMideaWithEvolution($schedule, $type)
     {

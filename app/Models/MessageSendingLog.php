@@ -22,7 +22,9 @@ class MessageSendingLog extends Model
         'group_id',
     ];
 
-    public function schedule(){
-        return $this->belongsTo(Scheduling::class);
+    public function schedule()
+    {
+        return $this->belongsTo(Scheduling::class, 'schedule_id');
     }
+    
 }
