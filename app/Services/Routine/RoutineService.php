@@ -2,10 +2,12 @@
 
 namespace App\Services\Routine;
 
+use App\Models\MessageSendingLog;
 use App\Models\Scheduling;
 use App\Trait\EvolutionTrait;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class RoutineService
@@ -13,37 +15,57 @@ class RoutineService
 
     use EvolutionTrait; 
 
-    public function handleMessage(){
+    public function handleMessage()
+    {
+        DB::beginTransaction();
 
-        $schedules = Scheduling::where('status', 'Waiting')
-            ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') = ?", [Carbon::now()->format('Y-m-d H:i')])
-            ->get();
+        try {
+            $schedules = Scheduling::where('status', 'Waiting')
+                ->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') <= ?", [Carbon::now()->format('Y-m-d H:i')])
+                ->doesntHave('messageSendingLog')
+                ->lockForUpdate()
+                ->get();
 
-        foreach($schedules as $schedule){
-            try{
-                $this->prepareEvoCredentials();
-                switch($schedule->midia){
-                    case 'video':
-                        $this->sendMideaWithEvolution($schedule, 'video');
-                        break;
-                    case 'imagem':
-                        $this->sendMideaWithEvolution($schedule, 'image');
-                        break;
-                    case 'audio':
-                        $this->sendAudioWithEvolution($schedule);
-                        break;
-                    default:
-                        $this->sendMessageWithEvolution($schedule);                        
+            foreach ($schedules as $schedule) {
+                try {
+                    $this->prepareEvoCredentials();
+                    switch ($schedule->midia) {
+                        case 'video':
+                            $this->sendMideaWithEvolution($schedule, 'video');
+                            break;
+                        case 'imagem':
+                            $this->sendMideaWithEvolution($schedule, 'image');
+                            break;
+                        case 'audio':
+                            $this->sendAudioWithEvolution($schedule);
+                            break;
+                        default:
+                            $this->sendMessageWithEvolution($schedule);
+                    }
+                    
+                    MessageSendingLog::create([
+                        'schedule_id' => $schedule->id,
+                        'instanceName' => $schedule->instance->name,
+                        'description' => $schedule->description,
+                        'datetime' => $schedule->datetime,
+                        'group_id' => $schedule->group_id,
+                    ]);
+
+                    $schedule->status = 'Sent';
+                    $schedule->save();
+
+                } catch (Exception $error) {
+                    Log::error($error->getMessage());
                 }
-                
-                $schedule->status = 'Sent';
-                $schedule->save();
             }
-            catch(Exception $error){
-                Log::error($error->getMessage());
-            }
-        }            
+
+            DB::commit();
+        } catch (Exception $error) {
+            DB::rollBack();
+            Log::error($error->getMessage());
+        }
     }
+
 
     public function sendMideaWithEvolution($schedule, $type)
     {

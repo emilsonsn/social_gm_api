@@ -235,7 +235,7 @@ class SchedulingService
                     ->first();
             }
 
-            $requestData['status'] = 'Waiting';
+            $requestData['status'] = $requestData['status'] ?? 'Waiting';
             
             $schedulingToUpdate->update($requestData);
                 

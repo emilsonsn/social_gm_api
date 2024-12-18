@@ -38,7 +38,7 @@ class SchedulingController extends Controller
     public function update(Request $request, int $id){
         $result = $this->schedulingService->update($request, $id);
 
-        if($result['status']) $result['message'] = "Agendamento atualizado com sucesso";
+        if($result['status']) $result['message'] = "Registro atualizado com sucesso";
 
         return $this->response($result);
     }
