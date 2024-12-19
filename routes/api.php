@@ -70,6 +70,7 @@ Route::middleware('jwt')->group(function(){
     });
 
     Route::prefix('schedule')->group(function(){
+        Route::get('all', [SchedulingController::class, 'all']);
         Route::get('search', [SchedulingController::class, 'search']);
         Route::post('create', [SchedulingController::class, 'create']);
         Route::post('copy/{id}', [SchedulingController::class, 'copy']);

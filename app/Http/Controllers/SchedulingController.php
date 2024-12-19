@@ -13,6 +13,12 @@ class SchedulingController extends Controller
         $this->schedulingService = $schedulingService;
     }
 
+    public function all(Request $request){
+        $result = $this->schedulingService->all($request);
+
+        return $result;
+    }
+
     public function search(Request $request){
         $result = $this->schedulingService->search($request);
 
