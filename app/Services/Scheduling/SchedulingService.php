@@ -11,6 +11,59 @@ use Illuminate\Support\Facades\Validator;
 
 class SchedulingService
 {
+
+    public function all($request)
+    {
+        try{
+            $take = 1000;
+            $orderField = $request->orderField ?? 'datetime';
+            $order = $request->order ?? 'desc';
+            $instance_id = $request->instance_id;
+
+            $instance = Instance::where(function($query) use($instance_id){
+                $query->where('id', $instance_id)
+                ->orWhere('external_id', $instance_id);             
+            })->first();
+
+            $schedulings = Scheduling::orderBy($orderField, $order)
+                ->orderBy('id', 'desc');
+
+            $schedulings->where(function($query) use($instance){
+                $query->where('instance_id', $instance->id)
+                    ->orWhere('instance_id', $instance->external_id);
+            });
+              
+            if($request->filled('description')){
+                $schedulings->where('description', 'LIKE', "%$request->description%");
+            }
+
+            if($request->filled('status')){
+                $status = explode(',',$request->status);
+                $schedulings->whereIn('status', $status);
+            }
+
+            if($request->filled('date')){
+                $schedulings->whereDate('datetime', $request->date);
+            }else{
+                if ('Model' != $request->status){
+                    $schedulings->whereDate('datetime', Carbon::now());
+                } 
+            }
+
+            $schedulings = $schedulings->paginate($take);
+
+            return $schedulings;
+
+        } catch(Exception $error){
+            return [
+                'status' => false,
+                'message' => $error->getMessage(),
+                'statusCode' => 400
+            ];  
+        }
+    }
+
+
     public function search($request)
     {
         try{
