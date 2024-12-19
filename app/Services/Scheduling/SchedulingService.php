@@ -127,9 +127,10 @@ class SchedulingService
 
             $requestData['instance_id'] = $instance->id;
 
-            $requestData['status'] = $requestData['status'] ?? 'Waiting';
-            if($requestData['status'] === 'Copy') $requestData['status'] = 'Waiting';
-
+            if($requestData['status'] !== 'Model'){
+                $requestData['status'] = 'Waiting';
+            }
+            
             $scheduling = Scheduling::create($requestData);
                 
             return [
@@ -241,10 +242,10 @@ class SchedulingService
             if(!isset($instance)) throw new Exception('Agendamento não encontrada');
 
             $requestData['instance_id'] = $instance->id;
-            
-            $requestData['status'] = $requestData['status'] ?? 'Waiting';
 
-            if($requestData['status'] === 'Copy') $requestData['status'] = 'Waiting';
+            if($requestData['status'] !== 'Model'){
+                $requestData['status'] = 'Waiting';
+            }
             
             $schedulingToUpdate->update($requestData);
                 
