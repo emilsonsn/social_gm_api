@@ -22,7 +22,12 @@ class SchedulingController extends Controller
     public function create(Request $request){
         $result = $this->schedulingService->create($request);
 
-        if($result['status']) $result['message'] = "Agendamento criado com sucesso";
+        if($result['status']) {
+            $result['message'] = "Agendamento criado com sucesso";
+            if($result['data']['status'] == 'Model'){
+                $result['message'] = "Modelo criado com sucesso";
+            }
+        }
 
         return $this->response($result);
     }
@@ -38,7 +43,12 @@ class SchedulingController extends Controller
     public function update(Request $request, int $id){
         $result = $this->schedulingService->update($request, $id);
 
-        if($result['status']) $result['message'] = "Registro atualizado com sucesso";
+        if($result['status']) {
+            $result['message'] = "Agendamento atualizado com sucesso";
+            if($result['data']['status'] == 'Model'){
+                $result['message'] = "Modelo atualizado com sucesso";
+            }
+        }
 
         return $this->response($result);
     }
