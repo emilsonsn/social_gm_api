@@ -25,6 +25,10 @@ class RoutineService
                 ->doesntHave('messageSendingLog')                
                 ->get();
 
+            if(!isset($schedules) || !count($schedules)) return;
+
+            Log::info("Iniciando disparo de mensagens. Agendamentos: ". count($schedules));
+
             foreach ($schedules as $schedule) {
                 try {
                     $this->prepareEvoCredentials();
