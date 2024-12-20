@@ -21,7 +21,7 @@ class PrizeDrawService
             $take = $request->take ?? 10;
             $instance_id = $request->instance_id ?? null;
 
-            $prizeDraws = PrizeDraw::orderBy('id', 'desc');
+            $prizeDraws = PrizeDraw::with('drawns')->orderBy('id', 'desc');
 
             if(isset($instance_id)){
                 $prizeDraws->where('instance_id', $instance_id);
@@ -109,7 +109,7 @@ class PrizeDrawService
 
             $rules = [
                 'prize_draw_id' => ['required', 'integer'],
-                'name' => ['required', 'string'],
+                'name' => ['nullable', 'string'],
                 'number' => ['required', 'string'],
             ];                                    
 
@@ -120,6 +120,8 @@ class PrizeDrawService
             if($validator->fails()){
                 throw new Exception($validator->errors(), 400);
             }
+
+            if(isset($requestData['phone'])) $requestData['number'] = $requestData['phone'];
             
             $prizeDrawDrawn = PrizeDrawDrawn::create($requestData);
                 

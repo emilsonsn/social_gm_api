@@ -29,7 +29,7 @@ class PrizeDrawController extends Controller
     }
 
     public function addDrawn(Request $request){
-        $result = $this->drizeDrawService->create($request);
+        $result = $this->drizeDrawService->addDrawn($request);
 
         if($result['status']) $result['message'] = "Sorteado adicionado com sucesso";
 

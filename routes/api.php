@@ -81,7 +81,7 @@ Route::middleware('jwt')->group(function(){
     Route::prefix('prize-draw')->group(function(){
         Route::get('search', [PrizeDrawController::class, 'search']);
         Route::post('create', [PrizeDrawController::class, 'create']);
-        Route::post('add-draw', [PrizeDrawController::class, 'addDrawn']);
+        Route::post('add-drawn', [PrizeDrawController::class, 'addDrawn']);
         Route::post('copy/{id}', [PrizeDrawController::class, 'copy']);
         Route::patch('{id}', [PrizeDrawController::class, 'update']);
         Route::delete('{id}', [PrizeDrawController::class, 'delete']);

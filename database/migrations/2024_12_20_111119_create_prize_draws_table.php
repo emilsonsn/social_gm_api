@@ -23,13 +23,14 @@ return new class extends Migration
         Schema::create('prize_draw_drawns', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('prize_draw_id');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('number');            
             $table->timestamps();
 
             $table->foreign('prize_draw_id')
                 ->references('id')
-                ->on('prize_draws');
+                ->on('prize_draws')
+                ->onDelete('cascade');
         });
     }
 
