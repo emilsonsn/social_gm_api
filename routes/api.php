@@ -6,6 +6,7 @@ use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InstanceController;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\PrizeDrawController;
 use App\Http\Controllers\SchedulingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebhookController;
@@ -31,8 +32,7 @@ Route::post('updatePassword', [UserController::class, 'updatePassword']);
 
 Route::get('validateToken', [AuthController::class, 'validateToken']);
 
-Route::prefix('webhook')->group(function(){    
-    Route::post('handle', [WebhookController::class, 'handle']);        
+Route::prefix('webhook')->group(function(){
     Route::post('handle', [WebhookController::class, 'handle']);        
 });
 
@@ -76,6 +76,15 @@ Route::middleware('jwt')->group(function(){
         Route::post('copy/{id}', [SchedulingController::class, 'copy']);
         Route::patch('{id}', [SchedulingController::class, 'update']);
         Route::delete('{id}', [SchedulingController::class, 'delete']);
+    });
+
+    Route::prefix('prize-draw')->group(function(){
+        Route::get('search', [PrizeDrawController::class, 'search']);
+        Route::post('create', [PrizeDrawController::class, 'create']);
+        Route::post('add-draw', [PrizeDrawController::class, 'addDrawn']);
+        Route::post('copy/{id}', [PrizeDrawController::class, 'copy']);
+        Route::patch('{id}', [PrizeDrawController::class, 'update']);
+        Route::delete('{id}', [PrizeDrawController::class, 'delete']);
     });
 
     Route::prefix('automation')->group(function(){
