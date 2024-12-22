@@ -2,6 +2,7 @@
 
 namespace App\Services\PrizeDraw;
 
+use App\Enums\UserRoleEnum;
 use App\Models\Instance;
 use App\Models\PrizeDraw;
 use App\Models\PrizeDrawDrawn;
@@ -20,6 +21,7 @@ class PrizeDrawService
         try{
             $take = $request->take ?? 10;
             $instance_id = $request->instance_id ?? null;
+            $auth = Auth::user();
 
             $prizeDraws = PrizeDraw::with('drawns')->orderBy('id', 'desc');
 
@@ -29,6 +31,12 @@ class PrizeDrawService
               
             if($request->filled('prize_name')){
                 $prizeDraws->where('prize_name', 'LIKE', "%$request->prize_name%");
+            }
+
+            if($auth->role != UserRoleEnum::Admin->value){
+                $prizeDraws->whereHas('instance', function($query) use ($auth){
+                    $query->where('user_id', $auth->id);
+                });
             }
 
             $prizeDraws = $prizeDraws->paginate($take);

@@ -113,12 +113,6 @@ class UserService
                 throw new Exception($validator->errors(), 400);
             }
     
-            if ($request->hasFile('photo')) {
-                $path = $request->file('photo')->store('photos', 'public');
-                $fullPath = asset('storage/' . $path);
-                $requestData['photo'] = $fullPath;
-            }
-    
             $user = User::create($requestData);
     
             Mail::to($user->email)->send(new WelcomeMail($user->name, $user->email, $password));
@@ -136,11 +130,11 @@ class UserService
             $rules = [
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255',
+                'phone' => 'nullable|string',
                 'cpf_cnpj' => 'nullable|string',
                 'birth_date' => 'nullable|date',
                 'is_active' => 'nullable|boolean',
-                'role' => 'nullable|in:Admin,Manager,User',
-                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'role' => 'nullable|in:Admin,Manager,User',                
             ];
 
             $requestData = $request->all();
@@ -156,12 +150,6 @@ class UserService
             if(!isset($userToUpdate)) throw new Exception('Usuário não encontrado');
 
             $requestData = $validator->validated();
-
-            if ($request->hasFile('photo')) {
-                $path = $request->file('photo')->store('photos', 'public');
-                $fullPath = asset('storage/' . $path);
-                $requestData['photo'] = $fullPath;
-            }
 
             $userToUpdate->update($requestData);
 

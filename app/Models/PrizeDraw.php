@@ -25,4 +25,8 @@ class PrizeDraw extends Model
         return $this->hasMany(PrizeDrawDrawn::class);
     }
 
+    public function instance(){
+        return $this->belongsTo(Instance::class, 'external_id', 'instance_id');
+    }
+
 }
