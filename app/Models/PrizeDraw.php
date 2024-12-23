@@ -26,7 +26,7 @@ class PrizeDraw extends Model
     }
 
     public function instance(){
-        return $this->belongsTo(Instance::class, 'external_id', 'instance_id');
+        return $this->belongsTo(Instance::class, 'instance_id', 'external_id');
     }
 
 }

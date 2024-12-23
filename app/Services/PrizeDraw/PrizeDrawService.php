@@ -23,7 +23,7 @@ class PrizeDrawService
             $instance_id = $request->instance_id ?? null;
             $auth = Auth::user();
 
-            $prizeDraws = PrizeDraw::with('drawns')->orderBy('id', 'desc');
+            $prizeDraws = PrizeDraw::with('drawns', 'instance')->orderBy('id', 'desc');
 
             if(isset($instance_id)){
                 $prizeDraws->where('instance_id', $instance_id);
