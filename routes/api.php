@@ -4,10 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ContactListController;
 use App\Http\Controllers\InstanceController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\PrizeDrawController;
 use App\Http\Controllers\SchedulingController;
+use App\Http\Controllers\TriggeringController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\AdminMiddleware;
@@ -87,11 +89,24 @@ Route::middleware('jwt')->group(function(){
         Route::delete('{id}', [PrizeDrawController::class, 'delete']);
     });
 
+    Route::prefix('contact-list')->group(function(){
+        Route::get('search', [ContactListController::class, 'search']);
+        Route::post('import', [ContactListController::class, 'import']);
+        Route::delete('{id}', [ContactListController::class, 'delete']);
+    });
+
     Route::prefix('automation')->group(function(){
         Route::get('search', [AutomationController::class, 'search']);
         Route::post('create', [AutomationController::class, 'create']);
         Route::patch('{id}', [AutomationController::class, 'update']);
         Route::delete('{id}', [AutomationController::class, 'delete']);
+    });
+
+    Route::prefix('triggering')->group(function(){
+        Route::get('search', [TriggeringController::class, 'search']);
+        Route::post('create', [TriggeringController::class, 'create']);
+        Route::patch('{id}', [TriggeringController::class, 'update']);
+        Route::delete('{id}', [TriggeringController::class, 'delete']);
     });
 
     Route::prefix('instance')->group(function(){

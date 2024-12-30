@@ -14,6 +14,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('app:send-message')->everyMinute()
             ->appendOutputTo(storage_path('logs/schedule.log'));
+
+        $schedule->command('app:send-triggering')->everyMinute()
+            ->appendOutputTo(storage_path('logs/schedule.log'));
     }
     
 

@@ -91,6 +91,25 @@ Trait EvolutionTrait
         return $response;
     }
 
+    public function checkNumberTriggering(
+        $baseUrl,
+        $apiKey,
+        $instance,
+        $number,
+    )
+    {
+        $response = Http::withHeaders([
+            'apiKey' => $apiKey,
+            'Content-Type' => 'application/json',
+        ])->post($baseUrl . "/chat/whatsappNumbers/{$instance}", [
+            'numbers' => [
+                $number
+            ]
+        ]);
+
+        return $response->json();
+    }
+
     public function sendMessage($instance, $number, $message, $mention)
     {
         $response = Http::withHeaders([
@@ -126,6 +145,35 @@ Trait EvolutionTrait
             'apiKey' => $this->apiKey,
             'Content-Type' => 'application/json',
         ])->post($this->baseUrl . "/message/sendMedia/{$instance}", [
+            'number' => $number,
+            'mediatype' => $mediaType,
+            'media' => $media,
+            'caption' => $caption,
+            'mimetype' => $mimeType,
+            'fileName' => $fileName,
+            "mentionsEveryOne" => $mention
+        ]);
+
+        return $response->json();
+    }
+
+    public function sendMediaTriggering(
+        $baseUrl,
+        $apiKey,
+        $instance,
+        $number,
+        $mediaType,
+        $media,
+        $caption,
+        $mimeType = null,
+        $fileName = null,
+        $mention
+    )
+    {
+        $response = Http::withHeaders([
+            'apiKey' => $apiKey,
+            'Content-Type' => 'application/json',
+        ])->post($baseUrl . "/message/sendMedia/{$instance}", [
             'number' => $number,
             'mediatype' => $mediaType,
             'media' => $media,

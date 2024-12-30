@@ -2,8 +2,12 @@
 
 namespace App\Services\Routine;
 
+use App\Models\Contact;
+use App\Models\ContactList;
 use App\Models\MessageSendingLog;
 use App\Models\Scheduling;
+use App\Models\Triggering;
+use App\Models\TriggeringMessage;
 use App\Trait\EvolutionTrait;
 use Carbon\Carbon;
 use Exception;
@@ -64,6 +68,103 @@ class RoutineService
 
         } catch (Exception $error) {
             Log::error($error->getMessage());
+        }
+    }
+
+    public function sendTriggering()
+    {
+        try {
+            $triggerings = Triggering::where('status', 'Pending')->get();
+    
+            foreach ($triggerings as $triggering) {
+                $baseUrl = $triggering->evo_url;
+                $apiKey = $triggering->evo_key;
+                $instance = $triggering->evo_instance;
+                $interval = (int) $triggering->interval;
+    
+                $contact = Contact::where('contact_list_id', $triggering->contact_list_id)
+                    ->where('is_whatsapp', 'Pending')
+                    ->first();
+    
+                if (!$contact) {
+                    continue;
+                }
+    
+                $lastContact = Contact::where('contact_list_id', $triggering->contact_list_id)
+                    ->where('is_whatsapp', '!=', 'Pending')
+                    ->orderBy('updated_at', 'desc')
+                    ->first();
+    
+                if ($lastContact) {
+                    $lastUpdated = $lastContact->updated_at;
+                    $now = now();
+    
+                    $differenceInMinutes = $lastUpdated->diffInMinutes($now);
+    
+                    if ($differenceInMinutes < $interval) {
+                        continue;
+                    }
+                }
+    
+                $response = $this->checkNumberTriggering(
+                    $baseUrl,
+                    $apiKey,
+                    $instance,
+                    '+55' . $contact->phone
+                );
+    
+                $message = $triggering->messages->random()->message;
+                $name = explode(' ', $contact->name)[0];
+                $message = str_replace('{nome}', ucfirst($name), $message);
+    
+                if ($response[0]['exists']) {
+                    $contact->is_whatsapp = 'Whatsapp';
+                    $contact->save();
+
+                    $filePath = public_path(parse_url($triggering->path, PHP_URL_PATH));
+                    $mimeType = mime_content_type($filePath);
+
+                    $response = $this->sendMediaTriggering(
+                        $baseUrl,
+                        $apiKey,
+                        $instance,
+                        '+55' . $contact->phone,
+                        'image',                        
+                        $triggering->path,
+                        $message,
+                        $mimeType,
+                        'image',
+                        mention: false
+                    );
+
+                    $response;
+    
+                } else {
+                    $contact->is_whatsapp = 'NotFound';
+                    $contact->save();
+                }
+            }
+
+            $this->updateProcessedTriggerings();
+
+        } catch (Exception $error) {
+            Log::error($error->getMessage());
+        }
+    }
+
+    private function updateProcessedTriggerings()
+    {
+        $triggerings = Triggering::where('status', 'Pending')->get();
+
+        foreach ($triggerings as $triggering) {
+            $pendingContacts = Contact::where('contact_list_id', $triggering->contact_list_id)
+                ->where('is_whatsapp', 'Pending')
+                ->exists();
+
+            if (!$pendingContacts) {
+                $triggering->status = 'Finished';
+                $triggering->save();
+            }
         }
     }
 
