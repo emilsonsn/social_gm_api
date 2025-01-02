@@ -14,14 +14,32 @@ class TriggeringService
     {
         try {
             $take = $request->take ?? 10;
-    
+        
             $auth = Auth::user();
-    
+        
             $triggerings = Triggering::with('messages', 'list', 'user')
                 ->where('user_id', $auth->id)
                 ->orderBy('id', 'desc')
                 ->paginate($take);
+        
+            // Iterar sobre cada triggering para incluir os contatos
+            $triggerings->getCollection()->each(function ($triggering) {
+                $contactList = $triggering->list;
     
+                $triggering->pending_contacts = $contactList->contacts()->where('is_whatsapp', 'Pending')->count();
+                
+                $triggering->notfound_contacts = $contactList->contacts()->where('is_whatsapp', 'NotFound')->count();
+    
+                $triggering->whatsapp_contacts = $contactList->contacts()->where('is_whatsapp', 'Whatsapp')->count();
+
+                $triggering->total_contacts = $contactList->contacts()->count();
+                
+                $pendingContacts = $triggering->pending_contacts;
+                $interval = $contactList->interval ?? 0;
+    
+                $triggering->remaining_time = $interval * $pendingContacts;
+            });
+        
             return $triggerings;
         } catch (Exception $error) {
             return [
@@ -31,7 +49,6 @@ class TriggeringService
             ];
         }
     }
-    
 
     public function create($request)
     {
