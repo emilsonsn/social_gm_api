@@ -35,7 +35,7 @@ class TriggeringService
                 $triggering->total_contacts = $contactList->contacts()->count();
                 
                 $pendingContacts = $triggering->pending_contacts;
-                $interval = $contactList->interval ?? 0;
+                $interval = $triggering->interval ?? 0;
     
                 $triggering->remaining_time = $interval * $pendingContacts;
             });
