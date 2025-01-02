@@ -116,6 +116,8 @@ class RoutineService
                 $message = $triggering->messages->random()->message;
                 $name = explode(' ', $contact->name)[0];
                 $message = str_replace('{nome}', ucfirst($name), $message);
+
+                Log::info(json_encode($response));
     
                 if ($response[0]['exists']) {
                     $contact->is_whatsapp = 'Whatsapp';
