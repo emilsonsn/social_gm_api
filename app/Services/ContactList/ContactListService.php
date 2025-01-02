@@ -71,6 +71,10 @@ class ContactListService
     
             $contacts = [];
             foreach ($data as $row) {
+                if (count($row) !== count($header)) {
+                    continue;
+                }
+
                 $rowData = array_combine($header, $row);
                 
                 if (isset($rowData['Nome']) && isset($rowData['Telefones'])) {
