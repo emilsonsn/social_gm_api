@@ -58,6 +58,7 @@ class ContactListService
             $delimiter = strpos($firstLine, ';') !== false ? ';' : ',';
 
             $data = array_map(function ($line) use ($delimiter) {
+                $line = mb_convert_encoding($line, 'UTF-8', 'auto');
                 return str_getcsv($line, $delimiter);
             }, file($path));
             
