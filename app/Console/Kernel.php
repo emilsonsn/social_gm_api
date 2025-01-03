@@ -13,9 +13,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('app:send-message')->everyMinute()
+            ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/schedule.log'));
 
         $schedule->command('app:send-triggering')->everyMinute()
+            ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/schedule.log'));
     }
     
