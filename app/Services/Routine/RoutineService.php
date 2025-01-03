@@ -105,12 +105,14 @@ class RoutineService
                         continue;
                     }
                 }
+
+                $phone = $this->preparePhone('(83) 9123-6636');
     
                 $response = $this->checkNumberTriggering(
                     $baseUrl,
                     $apiKey,
                     $instance,
-                    '+55' . $contact->phone
+                    $phone
                 );
     
                 $message = $triggering->messages->random()->message;
@@ -215,4 +217,21 @@ class RoutineService
             sleep(1);
         }
     }
+    
+    private function preparePhone($phone){
+        $phone = preg_replace('/\D/', '', $phone);
+    
+        if (strlen($phone) <= 11) {
+            $phone = '+55' . $phone;
+        } else {
+            $phone = '+' . $phone;
+        }
+    
+        if (strlen($phone) == 13) {
+            $phone = substr($phone, 0, 5) . '9' . substr($phone, 5);
+        }
+    
+        return $phone;
+    }
+    
 }
