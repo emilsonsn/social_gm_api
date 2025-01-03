@@ -123,23 +123,17 @@ class RoutineService
                     $contact->is_whatsapp = 'Whatsapp';
                     $contact->save();
 
-                    $filePath = public_path(parse_url($triggering->path, PHP_URL_PATH));
-                    $mimeType = mime_content_type($filePath);
-
-                    $response = $this->sendMediaTriggering(
+                    $responseMidea = $this->sendMediaTriggering(
                         $baseUrl,
                         $apiKey,
                         $instance,
                         '+55' . $contact->phone,
-                        'image',                        
-                        $triggering->path,
+                        $triggering->path,                        
                         $message,
-                        $mimeType,
                         'image',
-                        mention: false
                     );
 
-                    $response;
+                    $responseMidea;
     
                 } else {
                     $contact->is_whatsapp = 'NotFound';

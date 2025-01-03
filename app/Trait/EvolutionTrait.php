@@ -162,26 +162,27 @@ Trait EvolutionTrait
         $apiKey,
         $instance,
         $number,
-        $mediaType,
         $media,
         $caption,
-        $mimeType = null,
-        $fileName = null,
-        $mention
     )
     {
+        $payload = [
+            'number' => $number,
+            'options' => [
+                'delay'=>  1200,
+                'presence'=> 'composing',
+            ],
+            'mediaMessage' => [
+                'mediatype' => 'image',
+                'caption' => $caption,
+                'media' => $media,
+            ],
+        ];
+
         $response = Http::withHeaders([
             'apiKey' => $apiKey,
             'Content-Type' => 'application/json',
-        ])->post($baseUrl . "/message/sendMedia/{$instance}", [
-            'number' => $number,
-            'mediatype' => $mediaType,
-            'media' => $media,
-            'caption' => $caption,
-            'mimetype' => $mimeType,
-            'fileName' => $fileName,
-            "mentionsEveryOne" => $mention
-        ]);
+        ])->post($baseUrl . "/message/sendMedia/{$instance}", $payload);
 
         return $response->json();
     }
