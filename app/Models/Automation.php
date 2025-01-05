@@ -17,6 +17,7 @@ class Automation extends Model
 
     protected $fillable = [
         'instance_id',
+        'group_id',
         'welcome_message',
         'farewell_message',
     ];    

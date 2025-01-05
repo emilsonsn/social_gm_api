@@ -36,6 +36,7 @@ class AutomationService
         try{
             $rules = [
                 'instance_id' => ['required', 'string'],
+                'group_id' => ['required', 'string'],
                 'farewell_message' => ['nullable', 'string'],
                 'welcome_message' => ['nullable', 'string'],
             ];                                    
@@ -69,6 +70,7 @@ class AutomationService
         try{
             $rules = [
                 'instance_id' => ['required', 'string'],
+                'group_id' => ['required', 'string'],
                 'welcome_message' => ['nullable', 'string'],
                 'farewell_message' => ['nullable', 'string'],
             ];  
