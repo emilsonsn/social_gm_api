@@ -34,10 +34,6 @@ Route::post('updatePassword', [UserController::class, 'updatePassword']);
 
 Route::get('validateToken', [AuthController::class, 'validateToken']);
 
-Route::prefix('webhook')->group(function(){
-    Route::post('handle', [WebhookController::class, 'handle']);        
-});
-
 Route::middleware('jwt')->group(function(){
 
     Route::middleware(AdminMiddleware::class)->group(function() {
@@ -116,4 +112,9 @@ Route::middleware('jwt')->group(function(){
         Route::post('create', [InstanceController::class, 'create']);        
         Route::delete('{id}', [InstanceController::class, 'delete']);
     });
+});
+
+Route::prefix('webhook')->group(function(){
+    Route::post('handle', [WebhookController::class, 'handle']);        
+    Route::post('group-participants-update', [WebhookController::class, 'handle']);
 });

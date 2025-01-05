@@ -31,9 +31,11 @@ class WebhookService
 
         $automation = Automation::where('instance_id', $instance->external_id)
             ->whereNotNull('welcome_message')
-            ->first();
+            ->first();            
 
         if(!isset($automation)) return;
+
+        if($automation->group_id != $data['data']['id']) return;        
 
         $instanceName = $instance->name;
         $message = $automation->welcome_message;
@@ -51,6 +53,8 @@ class WebhookService
             ->first();
 
         if(!isset($automation)) return;
+
+        if($automation->group_id != $data['data']['id']) return;
 
         $instanceName = $instance->name;
         $message = $automation->farewell_message;
