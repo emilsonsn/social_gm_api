@@ -74,7 +74,9 @@ Trait EvolutionTrait
     public function fetchAllGroups($instance){
         $getInstances = Http::withHeaders([
             'apiKey' => $this->apiKey,
-        ])->get($this->baseUrl . "/group/fetchAllGroups/$instance?getParticipants=true");
+        ])
+            ->timeout(120)
+            ->get($this->baseUrl . "/group/fetchAllGroups/$instance?getParticipants=true");
 
         $response = $getInstances->json();
 
